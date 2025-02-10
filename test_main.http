@@ -1,0 +1,82 @@
+### Testa a rota raiz
+GET http://127.0.0.1:8000/
+Accept: application/json
+
+### Testa a rota de saudação
+GET http://127.0.0.1:8000/hello/User
+Accept: application/json
+
+### Testa o endpoint de Autômato Finito Determinístico (DFA)
+POST http://127.0.0.1:8000/dfa
+Accept: application/json
+Content-Type: application/json
+
+{
+    "states": ["q0", "q1", "q2"],
+    "input_symbols": ["0", "1"],
+    "transitions": {
+        "q0": {"0": "q0", "1": "q1"},
+        "q1": {"0": "q0", "1": "q2"},
+        "q2": {"0": "q2", "1": "q1"}
+    },
+    "initial_state": "q0",
+    "final_states": ["q1"],
+    "input_w": "1111111111111111111110"
+}
+
+### Testa o endpoint de Autômato com Pilha (DPDA)
+POST http://127.0.0.1:8000/dpda
+Accept: application/json
+Content-Type: application/json
+
+{
+  "states": ["q0", "q1", "q2", "q3"],
+  "input_symbols": ["a", "b"],
+  "stack_symbols": ["0", "1"],
+  "transitions": {
+    "q0": {
+      "a": { "0": ["q1", ["1", "0"]] }
+    },
+    "q1": {
+      "a": { "1": ["q1", ["1", "1"]] },
+      "b": { "1": ["q2", ""] }
+    },
+    "q2": {
+      "b": { "1": ["q2", ""] },
+      "": { "0": ["q3", ["0"]] }
+    }
+  },
+  "initial_state": "q0",
+  "initial_stack_symbol": "0",
+  "final_states": ["q3"],
+  "input_w": "aaaaabbbbb"
+}
+
+### Testando a maquina de turing (DTM)
+POST http://127.0.0.1:8000/tm
+Accept: application/json
+Content-Type: application/json
+
+{
+  "states": ["q0", "q1", "q2", "q3", "q_accept"],
+  "input_symbols": ["0", "1"],
+  "tape_symbols": ["0", "1", "_"],
+  "transitions": {
+    "q0": {
+      "1": ["q1", "1", "R"]
+    },
+    "q1": {
+      "1": ["q2", "1", "R"]
+    },
+    "q2": {
+      "0": ["q3", "0", "R"]
+    },
+    "q3": {
+      "_": ["q_accept", "_", "R"]
+    }
+  },
+  "initial_state": "q0",
+  "blank_symbol": "_",
+  "final_states": ["q_accept"],
+  "input_w": "110"
+}
